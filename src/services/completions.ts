@@ -1471,9 +1471,7 @@ namespace ts.Completions {
         }
 
         function isInStringOrRegularExpressionOrTemplateLiteral(contextToken: Node): boolean {
-            if (contextToken.kind === SyntaxKind.StringLiteral
-                || contextToken.kind === SyntaxKind.RegularExpressionLiteral
-                || isTemplateLiteralKind(contextToken.kind)) {
+            if (contextToken.kind === SyntaxKind.RegularExpressionLiteral || isStringTextContainingNode(contextToken)) {
                 const start = contextToken.getStart();
                 const end = contextToken.getEnd();
 

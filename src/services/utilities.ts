@@ -830,7 +830,7 @@ namespace ts {
 
     export function isInString(sourceFile: SourceFile, position: number, previousToken = findPrecedingToken(position, sourceFile)): boolean {
         if (previousToken && isStringTextContainingNode(previousToken)) {
-            const start = previousToken.getStart();
+            const start = previousToken.getStart(sourceFile);
             const end = previousToken.getEnd();
 
             // To be "in" one of these literals, the position has to be:
@@ -894,7 +894,7 @@ namespace ts {
 
     export function isInTemplateString(sourceFile: SourceFile, position: number) {
         const token = getTokenAtPosition(sourceFile, position, /*includeJsDocComment*/ false);
-        return isTemplateLiteralKind(token.kind) && position > token.getStart(sourceFile);
+        return isTemplateLiteralToken(token) && position > token.getStart(sourceFile);
     }
 
     export function findPrecedingMatchingToken(token: Node, matchingTokenKind: SyntaxKind, sourceFile: SourceFile) {
@@ -1093,9 +1093,9 @@ namespace ts {
         return SyntaxKind.FirstPunctuation <= kind && kind <= SyntaxKind.LastPunctuation;
     }
 
-    export function isInsideTemplateLiteral(node: LiteralExpression | TemplateHead, position: number) {
-        return isTemplateLiteralKind(node.kind)
-            && (node.getStart() < position && position < node.getEnd()) || (!!node.isUnterminated && position === node.getEnd());
+    export function isInsideTemplateLiteral(node: TemplateLiteralToken, position: number, sourceFile: SourceFile): boolean {
+        return isTemplateLiteralToken(node)
+            && (node.getStart(sourceFile) < position && position < node.end) || (!!node.isUnterminated && position === node.end);
     }
 
     export function isAccessibilityModifier(kind: SyntaxKind) {
